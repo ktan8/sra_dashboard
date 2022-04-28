@@ -81,11 +81,67 @@ def cumulative_monthly_counts(year, df):
 
   return cumulative, monthly
 
+# function to count unique organisms sequenced each month
+def count_species(year, df):
+  """ will explain later"""
+
+  # initialize dfs to hold results
+  Months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  cumulative = pd.DataFrame(Months, columns=['Month'])
+  monthly = pd.DataFrame(Months, columns=['Month'])
+
+  # subset df to desired year
+  sub_df = df[df['Year'] == year]
+
+  # intialize values/lists for loop
+  year_seen = [] # list of SpeciesID already seen this year, doesn't get reset
+  cumu_count = 0 # doesn't get reset with each month
+  month_result = []
+  cumu_result =[]
+  m = 1 # month
+
+  # loop through all months, starting with January (1)
+  while m <13:
+
+    #initialize monthly stuff
+    month_seen = [] # list of SpeciesID already seen this month
+    month_count = 0
+
+    # subset to current month
+    sub_df2 = sub_df[sub_df['Month'] == m] 
+
+    #loop through each value in SpeciesID
+    for i in sub_df2["SpeciesID"]:
+      if i not in month_seen:
+        month_count += 1
+        month_seen.append(i)
+      if i not in year_seen:
+        cumu_count +=1
+        year_seen.append(i)
+    
+    # when done looping through all rows for that month, append count results to lists
+    month_result.append(month_count)
+    cumu_result.append(cumu_count)
+
+    # increment m up, move onto next month
+    m +=1 
+
+
+  # add lists of counts as new columns in dfs
+  cumulative['Unique_Species_Sequenced'] = cumu_result
+  monthly['Unique_Species_Sequenced'] = month_result
+
+  return cumulative, monthly
+
+
 #Year slider
 year = st.slider('Select Year', 2008, 2022, 2008)
 #subset = everything[everything["Year"] == year]
 #print(subset.Month)
+
+
 subset = cumulative_monthly_counts(year, everything)
+subset2 = count_species(year, everything)
 
 #Species multiselector
 #species = st.multiselect('Select Species', pd.unique(everything["Species"]))
@@ -129,6 +185,8 @@ chart2 = alt.Chart(subset[1]).mark_bar().encode(
 
 st.altair_chart(chart1 | chart2)
 
+
+
 # Side-by-side plots: READS
 chart3 =  alt.Chart(subset[0]).mark_bar().encode(
     x=alt.X("Month:O"),
@@ -146,3 +204,22 @@ chart4 = alt.Chart(subset[1]).mark_bar().encode(
 )
 
 st.altair_chart(chart3 | chart4)
+
+
+# Side-by-side plots: SPECIES
+chart5 =  alt.Chart(subset2[0]).mark_bar().encode(
+    x=alt.X("Month:O"),
+    y=alt.Y("Unique_Species_Sequenced:Q"),
+).properties(
+    title="Cumulative Species Sequenced", width=500, height=300
+)
+
+
+chart6 = alt.Chart(subset2[1]).mark_bar().encode(
+    x=alt.X("Month:O"),
+    y=alt.Y("Unique_Species_Sequenced:Q"),
+).properties(
+    title="Species Sequenced per Month", width=500, height=300
+)
+
+st.altair_chart(chart5 | chart6)
