@@ -16,7 +16,7 @@ The NCBI_SRA_Metadata_Full_20220319.tar.gz file contains more detailed annotatio
 
 
 ## Extract organisms and experiment info from xml files
-extract_experiment_xml_info.pl
+Two custom scripts 'extract_experiment_xml_info.pl' and 'extract_organism_xml_info.pl' were written to extract the required information on the experimental platforms, library prepration protocol, and the organisms that were sequenced in these studies.
 
 `nohup bash -c "find $PWD -name "*.experiments.xml" | parallel -j 100 perl extract_experiment_xml_info.pl {} '>>' SRA.experiments.txt" &`
 
