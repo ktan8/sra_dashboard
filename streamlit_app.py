@@ -10,23 +10,14 @@ def load_data():
     return everything
 everything = load_data()
 
-### P1.2 ###
+#Title
+st.write("## SRA Database Explorer")
 
-st.write("## Age-specific cancer mortality rates")
-
-### P2.1 ###
-# replace with st.slider
-# year = 2012
-# subset = df[df["Year"] == year]
-### P2.1 ###
-year = st.slider('Which Year?', 1994, 2020, 2012)
+#Year slider
+year = st.slider('Select Year', 2008, 2022, 2008)
 subset = df[df["Year"] == year]
 
-### P2.2 ###
-# replace with st.radio
-# sex = "M"
-# subset = subset[subset["Sex"] == sex]
-### P2.2 ###
+#Species multiselector? Need to change this
 sex = st.radio( "Sex", ('M', 'F'))
 subset = subset[subset["Sex"] == sex]
 
