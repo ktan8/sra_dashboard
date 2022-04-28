@@ -8,7 +8,7 @@ We will download the required metadata from the SRA database.
 `wget -b https://ftp.ncbi.nlm.nih.gov/sra/reports/Metadata/SRA_Accessions.tab`
 
 ## Uncompress required files
-The NCBI_SRA_Metadata_Full_20220319.tar.gz file contains more detailed annotations on the organisms and experimental platforms for each dataset. We will therefore extract the corresponding XML files for these datasets.
+The NCBI_SRA_Metadata_Full_20220319.tar.gz file contains more detailed annotations on the organisms and experimental platforms for each dataset. As the full tar.gz file takes too long to fully extract in its entirety, we will extract only the corresponding required XML files for these datasets.
 
 `tar -xf NCBI_SRA_Metadata_Full_20220319.tar.gz *.experiments.xml`
 
@@ -16,9 +16,10 @@ The NCBI_SRA_Metadata_Full_20220319.tar.gz file contains more detailed annotatio
 
 
 ## Extract organisms and experiment info from xml files
-extract_experiment_xml_info.pl
+Two custom scripts 'extract_experiment_xml_info.pl' and 'extract_organism_xml_info.pl' were written to extract the required information on the experimental platforms, library prepration protocol, and the organisms that were sequenced in these studies.
 
 `nohup bash -c "find $PWD -name "*.experiments.xml" | parallel -j 100 perl extract_experiment_xml_info.pl {} '>>' SRA.experiments.txt" &`
+
 `nohup bash -c "find $PWD -name "*.sample.xml" | parallel -j 100 perl extract_organism_xml_info.pl {} '>>' SRA.organisms.txt" &`
 
 
@@ -26,6 +27,7 @@ extract_experiment_xml_info.pl
 As the SRA datasets is too big to work with and visualized in its entirety, we decided to randomly subset 5% of the full dataset. Even though we are not working with the full dataset, we expect the general temporal trends and top ranking results from the subsetted dataset to be largely concordant with the full dataset.
 
 This was done using the following command:
+
 `awk 'rand()<0.05' SRA_Accessions.RUN.tab >> SRA_Accessions.RUN.sample.tab`
 
 ## Merging tables
