@@ -21,9 +21,12 @@ subset = df[df["Year"] == year]
 species = st.multiselect('Select Species', pd.unique(df["Species"]))
 subset = subset[subset["Species"].isin(species)]
 
-#Center multiselector, top 20
-center = st.multiselect('Select Center', pd.unique(df["Center"]))
+#Center multiselector, top 20, GEO and NVAL are generic labels
+center = st.multiselect('Select Center', pd.unique(df["Center"]), ['GEO', 'Wellcome Sanger Institute', 'SC', 'CDC-OAMD', 'NVAL', 'BI', 'EDLB-CDC', 'UCSDMI', 'WGSC', 'Respiratory Virus Unit, Microbiology Services Coli', 'Originating lab: Wales Specialist Virology Centre', 'Broad_GCID', 'BGI', 'PHE', 'BCM', 'IPK-Gatersleben', 'JGI', 'Leibniz Institute of Plant Genetics and Crop Plant', 'UCSD'])
 subset = subset[subset["Center"].isin(center)]
+
+#machines list: ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS']
+#study type list: ['cDNA' 'ChIP' 'RANDOM' 'RANDOM PCR' 'unspecified' 'PCR' 'size fractionation' 'other' 'Restriction Digest' 'PolyA' 'Inverse rRNA''Oligo-dT' 'Hybrid Selection' 'RT-PCR' 'Reduced Representation''repeat fractionation' 'DNase' 'MBD2 protein methyl-CpG binding domain''MNase' 'MDA' 'RACE' 'padlock probes capture method''5-methylcytidine antibody' 'CAGE' 'ChIP-Seq']
 
 ### P2.3 ###
 #countries = st.multiselect('Select Countries', pd.unique(df["Country"]), ['Austria', 'Germany','Iceland', 'Spain','Sweden', 'Thailand','Turkey'])
@@ -46,11 +49,3 @@ chart = alt.Chart(subset).mark_rect().encode(
 ### P2.5 ###
 
 st.altair_chart(chart, use_container_width=True)
-
-countries_in_subset = subset["Country"].unique()
-if len(countries_in_subset) != len(countries):
-    if len(countries_in_subset) == 0:
-        st.write("No data avaiable for given subset.")
-    else:
-        missing = set(countries) - set(countries_in_subset)
-        st.write("No data available for " + ", ".join(missing) + ".")
