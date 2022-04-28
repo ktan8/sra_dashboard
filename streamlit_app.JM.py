@@ -107,3 +107,24 @@ chart = alt.Chart(subset[0]).mark_bar().encode(
 )
 
 st.altair_chart(chart, use_container_width=True)
+
+
+
+
+# Side-by-side plots
+chart1 =  alt.Chart(subset[0]).mark_bar().encode(
+    x=alt.X("Month:O"),
+    y=alt.Y("Billion_Basepairs_sequenced:Q"),
+).properties(
+    title="Cumulative Basepairs Sequenced", width=500, height=300
+)
+
+
+chart2 = alt.Chart(subset[0]).mark_bar().encode(
+    x=alt.X("Month:O"),
+    y=alt.Y("Billion_Basepairs_sequenced:Q"),
+).properties(
+    title="Basepairs Sequenced per Month", width=500, height=300
+)
+
+st.altair_chart(chart1 | chart2)
