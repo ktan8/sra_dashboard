@@ -6,7 +6,7 @@ import streamlit as st
 
 @st.cache
 def load_data():
-    everything = pd.read_csv("https://media.githubusercontent.com/media/ktan8/sra_dashboard/main/data/data.csv")
+    everything = pd.read_csv("https://media.githubusercontent.com/media/ktan8/sra_dashboard/main/data/data_date.csv")
     return everything
 everything = load_data()
 
