@@ -120,7 +120,7 @@ chart1 =  alt.Chart(subset[0]).mark_bar().encode(
 )
 
 
-chart2 = alt.Chart(subset[0]).mark_bar().encode(
+chart2 = alt.Chart(subset[1]).mark_bar().encode(
     x=alt.X("Month:O"),
     y=alt.Y("Billion_Basepairs_sequenced:Q"),
 ).properties(
