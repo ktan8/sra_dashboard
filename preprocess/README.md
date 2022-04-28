@@ -4,12 +4,14 @@
 We will download the required metadata from the SRA database.
 
 `wget -b https://ftp.ncbi.nlm.nih.gov/sra/reports/Metadata/NCBI_SRA_Metadata_Full_20220319.tar.gz`
+
 `wget -b https://ftp.ncbi.nlm.nih.gov/sra/reports/Metadata/SRA_Accessions.tab`
 
 ## Uncompress required files
 The NCBI_SRA_Metadata_Full_20220319.tar.gz file contains more detailed annotations on the organisms and experimental platforms for each dataset. We will therefore extract the corresponding XML files for these datasets.
 
 `tar -xf NCBI_SRA_Metadata_Full_20220319.tar.gz *.experiments.xml`
+
 `tar -xf NCBI_SRA_Metadata_Full_20220319.tar.gz *.sample.xml`
 
 
