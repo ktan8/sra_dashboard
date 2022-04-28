@@ -145,8 +145,14 @@ platform = st.multiselect('Select Sequencing Platform', pd.unique(everything["Ma
 #machines list: ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS']
 test = everything[everything['Machine'].isin(platform)]
 
-subset = cumulative_monthly_counts(year, test)
-subset2 = count_species(year, test)
+#Center multiselector, top 20, GEO and NVAL are generic labels
+top_20_centers = ['GEO', 'Wellcome Sanger Institute', 'SC', 'CDC-OAMD', 'NVAL', 'BI', 'EDLB-CDC', 'UCSDMI', 'WGSC', 'Respiratory Virus Unit, Microbiology Services Coli', 'Originating lab: Wales Specialist Virology Centre', 'Broad_GCID', 'BGI', 'PHE', 'BCM', 'IPK-Gatersleben', 'JGI', 'Leibniz Institute of Plant Genetics and Crop Plant', 'UCSD']
+center = st.multiselect('Select Center', top_20_centers )
+test2 = test[test['Center'].isin(center)]
+
+# subset for counting functions
+subset = cumulative_monthly_counts(year, test2)
+subset2 = count_species(year, test2)
 
 #Species multiselector
 #species = st.multiselect('Select Species', pd.unique(everything["Species"]))
