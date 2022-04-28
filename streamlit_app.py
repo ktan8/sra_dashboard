@@ -15,14 +15,14 @@ st.write("## SRA Database Explorer")
 
 #Year slider
 year = st.slider('Select Year', 2008, 2022, 2008)
-subset = df[df["Year"] == year]
+subset = everything[everything["Year"] == year]
 
 #Species multiselector
-species = st.multiselect('Select Species', pd.unique(df["Species"]))
+species = st.multiselect('Select Species', pd.unique(everything["Species"]))
 subset = subset[subset["Species"].isin(species)]
 
 #Center multiselector, top 20, GEO and NVAL are generic labels
-center = st.multiselect('Select Center', pd.unique(df["Center"]), ['GEO', 'Wellcome Sanger Institute', 'SC', 'CDC-OAMD', 'NVAL', 'BI', 'EDLB-CDC', 'UCSDMI', 'WGSC', 'Respiratory Virus Unit, Microbiology Services Coli', 'Originating lab: Wales Specialist Virology Centre', 'Broad_GCID', 'BGI', 'PHE', 'BCM', 'IPK-Gatersleben', 'JGI', 'Leibniz Institute of Plant Genetics and Crop Plant', 'UCSD'])
+center = st.multiselect('Select Center', pd.unique(everything["Center"]), ['GEO', 'Wellcome Sanger Institute', 'SC', 'CDC-OAMD', 'NVAL', 'BI', 'EDLB-CDC', 'UCSDMI', 'WGSC', 'Respiratory Virus Unit, Microbiology Services Coli', 'Originating lab: Wales Specialist Virology Centre', 'Broad_GCID', 'BGI', 'PHE', 'BCM', 'IPK-Gatersleben', 'JGI', 'Leibniz Institute of Plant Genetics and Crop Plant', 'UCSD'])
 subset = subset[subset["Center"].isin(center)]
 
 #machines list: ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS']
