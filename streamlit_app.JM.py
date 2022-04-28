@@ -155,17 +155,6 @@ subset2 = count_species(year, everything)
 #study type list: ['cDNA' 'ChIP' 'RANDOM' 'RANDOM PCR' 'unspecified' 'PCR' 'size fractionation' 'other' 'Restriction Digest' 'PolyA' 'Inverse rRNA''Oligo-dT' 'Hybrid Selection' 'RT-PCR' 'Reduced Representation''repeat fractionation' 'DNase' 'MBD2 protein methyl-CpG binding domain''MNase' 'MDA' 'RACE' 'padlock probes capture method''5-methylcytidine antibody' 'CAGE' 'ChIP-Seq']
 
 #Visualization
-chart = alt.Chart(subset[0]).mark_bar().encode(
-    x=alt.X("Month:O"),
-    y=alt.Y("Billion_Basepairs_sequenced:Q"),
-).properties(
-    title="test plot"
-)
-
-st.altair_chart(chart, use_container_width=True)
-
-
-
 
 # Side-by-side plots: BASEPAIRS
 chart1 =  alt.Chart(subset[0]).mark_bar().encode(
