@@ -27,6 +27,7 @@ extract_experiment_xml_info.pl
 As the SRA datasets is too big to work with and visualized in its entirety, we decided to randomly subset 5% of the full dataset. Even though we are not working with the full dataset, we expect the general temporal trends and top ranking results from the subsetted dataset to be largely concordant with the full dataset.
 
 This was done using the following command:
+
 `awk 'rand()<0.05' SRA_Accessions.RUN.tab >> SRA_Accessions.RUN.sample.tab`
 
 ## Merging tables
