@@ -143,7 +143,7 @@ year = st.slider('Select Year', 2008, 2022, 2008)
 # Platform multiselector
 platform = st.multiselect('Select Sequencing Platform', pd.unique(everything["Machine"]))
 #machines list: ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS']
-test = everything[everything["Machine"] == platform]
+test = everything[everything['Machine'].isin(platform)]
 
 subset = cumulative_monthly_counts(year, test)
 subset2 = count_species(year, test)
