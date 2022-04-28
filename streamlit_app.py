@@ -17,44 +17,24 @@ st.write("## SRA Database Explorer")
 year = st.slider('Select Year', 2008, 2022, 2008)
 subset = df[df["Year"] == year]
 
-#Species multiselector? Need to change this
-sex = st.radio( "Sex", ('M', 'F'))
-subset = subset[subset["Sex"] == sex]
+#Species multiselector
+species = st.multiselect('Select Species', pd.unique(df["Species"]))
+subset = subset[subset["Species"].isin(species)]
+
+#Center multiselector, top 20
+center = st.multiselect('Select Center', pd.unique(df["Center"]))
+subset = subset[subset["Center"].isin(center)]
 
 ### P2.3 ###
-# replace with st.multiselect
-# (hint: can use current hard-coded values below as as `default` for selector)
-#countries = [
-#    "Austria",
-#    "Germany",
-#    "Iceland",
-#   "Spain",
-#    "Sweden",
-#    "Thailand",
-#    "Turkey",
-#]
+#countries = st.multiselect('Select Countries', pd.unique(df["Country"]), ['Austria', 'Germany','Iceland', 'Spain','Sweden', 'Thailand','Turkey'])
 #subset = subset[subset["Country"].isin(countries)]
-### P2.3 ###
-countries = st.multiselect('Select Countries', pd.unique(df["Country"]), ['Austria', 'Germany','Iceland', 'Spain','Sweden', 'Thailand','Turkey'])
-subset = subset[subset["Country"].isin(countries)]
 
 ### P2.4 ###
 # replace with st.selectbox
-cancer = st.selectbox('Select Cancer', pd.unique(df["Cancer"]))
-subset = subset[subset["Cancer"] == cancer]
+#cancer = st.selectbox('Select Cancer', pd.unique(df["Cancer"]))
+#subset = subset[subset["Cancer"] == cancer]
 
-### P2.5 ###
-ages = [
-    "Age <5",
-    "Age 5-14",
-    "Age 15-24",
-    "Age 25-34",
-    "Age 35-44",
-    "Age 45-54",
-    "Age 55-64",
-    "Age >64",
-]
-
+#Visualization
 chart = alt.Chart(subset).mark_rect().encode(
     x=alt.X("Age", sort=ages),
     y=alt.Y("Country"),
