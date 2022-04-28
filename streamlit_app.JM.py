@@ -1,3 +1,4 @@
+from cgi import test
 import altair as alt
 import pandas as pd
 import streamlit as st
@@ -139,9 +140,13 @@ year = st.slider('Select Year', 2008, 2022, 2008)
 #subset = everything[everything["Year"] == year]
 #print(subset.Month)
 
+# Platform multiselector
+platform = st.multiselect('Select Sequencing Platform', pd.unique(everything["Machine"]))
+#machines list: ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS']
+test = everything[everything["Machine"] == platform]
 
-subset = cumulative_monthly_counts(year, everything)
-subset2 = count_species(year, everything)
+subset = cumulative_monthly_counts(year, test)
+subset2 = count_species(year, test)
 
 #Species multiselector
 #species = st.multiselect('Select Species', pd.unique(everything["Species"]))
@@ -151,7 +156,8 @@ subset2 = count_species(year, everything)
 #center = st.multiselect('Select Center', pd.unique(everything["Center"]), ['GEO', 'Wellcome Sanger Institute', 'SC', 'CDC-OAMD', 'NVAL', 'BI', 'EDLB-CDC', 'UCSDMI', 'WGSC', 'Respiratory Virus Unit, Microbiology Services Coli', 'Originating lab: Wales Specialist Virology Centre', 'Broad_GCID', 'BGI', 'PHE', 'BCM', 'IPK-Gatersleben', 'JGI', 'Leibniz Institute of Plant Genetics and Crop Plant', 'UCSD'])
 #subset = subset[subset["Center"].isin(center)]
 
-#machines list: ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS']
+
+
 #study type list: ['cDNA' 'ChIP' 'RANDOM' 'RANDOM PCR' 'unspecified' 'PCR' 'size fractionation' 'other' 'Restriction Digest' 'PolyA' 'Inverse rRNA''Oligo-dT' 'Hybrid Selection' 'RT-PCR' 'Reduced Representation''repeat fractionation' 'DNase' 'MBD2 protein methyl-CpG binding domain''MNase' 'MDA' 'RACE' 'padlock probes capture method''5-methylcytidine antibody' 'CAGE' 'ChIP-Seq']
 
 #Visualization
