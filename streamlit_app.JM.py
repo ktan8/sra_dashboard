@@ -167,7 +167,7 @@ subset2 = count_species(year, sel3)
 # PLOT
 
 # Side-by-side plots: BASEPAIRS
-chart1 =  alt.Chart(subset[0]).mark_line.(
+chart1 =  alt.Chart(subset[0]).mark_line(
     point=alt.OverlayMarkDef(color='red')
 ).encode(
     x=alt.X("Month:O"),
