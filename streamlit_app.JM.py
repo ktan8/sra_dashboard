@@ -14,7 +14,7 @@ everything = load_data()
 #Title
 st.write("## SRA Database Explorer")
 
-#define function
+#define Figure A functions
 
 def cumulative_monthly_counts(year, df):
 
@@ -134,6 +134,7 @@ def count_species(year, df):
 
   return cumulative, monthly
 
+# Define Figure A user iteractive selection options
 
 #Year slider
 year = st.slider('Select Year', 2008, 2022, 2008)
@@ -143,32 +144,27 @@ year = st.slider('Select Year', 2008, 2022, 2008)
 # Platform multiselector
 platform = st.multiselect('Select Sequencing Platform', pd.unique(everything["Machine"]))
 #machines list: ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS']
-test = everything[everything['Machine'].isin(platform)]
+sel1 = everything[everything['Machine'].isin(platform)]
 
 # Center multiselector, top 20, GEO and NVAL are generic labels
 top_20_centers = ['GEO', 'Wellcome Sanger Institute', 'SC', 'CDC-OAMD', 'NVAL', 'BI', 'EDLB-CDC', 'UCSDMI', 'WGSC', 'Respiratory Virus Unit, Microbiology Services Coli', 'Originating lab: Wales Specialist Virology Centre', 'Broad_GCID', 'BGI', 'PHE', 'BCM', 'IPK-Gatersleben', 'JGI', 'Leibniz Institute of Plant Genetics and Crop Plant', 'UCSD']
 center = st.multiselect('Select Center', top_20_centers )
-test2 = test[test['Center'].isin(center)]
+sel2 = sel1[sel1['Center'].isin(center)]
 
 # Study Type multiselector
 study = st.multiselect('Select Study Type', pd.unique(everything["HowSequenced"]))
-test3 = test2[test2['HowSequenced'].isin(study)]
-
-# subset for counting functions
-subset = cumulative_monthly_counts(year, test3)
-subset2 = count_species(year, test3)
-
-#Species multiselector
-#species = st.multiselect('Select Species', pd.unique(everything["Species"]))
-#subset = subset[subset["Species"].isin(species)]
+sel3 = sel2[sel2['HowSequenced'].isin(study)]
 
 
 
 
+# Figure A Visualization 
 
-#study type list: ['cDNA' 'ChIP' 'RANDOM' 'RANDOM PCR' 'unspecified' 'PCR' 'size fractionation' 'other' 'Restriction Digest' 'PolyA' 'Inverse rRNA''Oligo-dT' 'Hybrid Selection' 'RT-PCR' 'Reduced Representation''repeat fractionation' 'DNase' 'MBD2 protein methyl-CpG binding domain''MNase' 'MDA' 'RACE' 'padlock probes capture method''5-methylcytidine antibody' 'CAGE' 'ChIP-Seq']
+# Call Figure A functions on user selection subset
+subset = cumulative_monthly_counts(year, sel3)
+subset2 = count_species(year, sel3)
 
-#Visualization
+# PLOT
 
 # Side-by-side plots: BASEPAIRS
 chart1 =  alt.Chart(subset[0]).mark_bar().encode(
@@ -226,3 +222,107 @@ chart6 = alt.Chart(subset2[1]).mark_bar().encode(
 )
 
 st.altair_chart(chart5 | chart6)
+
+
+# FIGURE B: rankings
+
+# define Figure B function
+def rankings(year, df):
+    
+  """Takes a year (as int) and input df. Returns 3 new dfs. The first df called "Centers"
+  has  3 columns; 1) Center name 2) cumulative entries count throughout the year,
+  and 3) Rank. The second df called "Species" is the same except the first col
+  holds species names. The 3rd df called "Platforms" is also the same except the
+  first column holds sequencing platform names."""
+
+  from pandas.core.algorithms import rank
+  
+  # subset df to desired year
+  sub_df = df[df['Year'] == year]
+
+  # Make Centers df(based on # entries, aka # rows)
+  centers_ranked = sub_df['Center'].value_counts() # count rows per center
+  if len(centers_ranked) >=20:
+    top_centers = centers_ranked[:20] # take top 20 if there are at least 20 options
+    c_ranks = list(range(1, 20+1)) # make list of ranks to add as col later
+  else:
+    top_centers = centers_ranked
+    c_ranks = list(range(1,len(top_centers)+1)) 
+  Centers = top_centers.to_frame() # convert to df
+  Centers = Centers.rename_axis("name").reset_index() # make rownames into first col
+  Centers.rename(columns = {'name':'Center', 'Center':'Entries'}, inplace = True) # change col names
+  Centers["Rank"] = c_ranks # add rank list as 3rd column
+  
+
+  # Make Species df (based on # entries, aka # rows)
+  species_ranked = sub_df['Species'].value_counts() # count rows per center
+  if len(species_ranked) >=20:
+    top_species = species_ranked[:20] # take top 20 if there are at least 20 options
+    s_ranks = list(range(1, 20+1)) # make list of ranks to add as col later
+  else:
+    top_species = species_ranked
+    s_ranks = list(range(1,len(top_species)+1)) 
+  Species = top_species.to_frame() # convert to df
+  Species = Species.rename_axis("name").reset_index() # make rownames into first col
+  Species.rename(columns = {'name':'Species', 'Species':'Entries'}, inplace = True) # change col names
+  Species["Rank"] = s_ranks # add rank list as 3rd column
+  
+
+  # Make Platform df (based on # entries, aka # rows)
+  platforms_ranked = sub_df['Machine'].value_counts() # count rows per center
+  if len(platforms_ranked) >=20:
+    top_platforms = platforms_ranked[:20] # take top 20 if there are at least 20 options
+    p_ranks = list(range(1, 20+1)) # make list of ranks to add as col later
+  else:
+    top_platforms = platforms_ranked # take however many there are
+    p_ranks = list(range(1,len(top_platforms)+1)) # make rank list to match lenth
+  Platforms = top_platforms.to_frame() # convert to df
+  Platforms = Platforms.rename_axis("name").reset_index() # make rownames into first col
+  Platforms.rename(columns = {'name':'Platform', 'Machine':'Entries'}, inplace = True) # change col names
+  Platforms["Rank"] = p_ranks # add rank list as 3rd column
+
+  return Centers, Species, Platforms
+
+
+# set Figure B year slider
+
+figB_year = st.slider('Select Year', 2008, 2022, 2008)
+
+# Figure B Visualization
+
+# call rankings function
+ranks = rankings(figB_year, everything)
+
+# PLOT
+
+# Top Centers
+chart7 =  alt.Chart(rankings[0]).mark_bar().encode(
+    x=alt.X("Center:O"),
+    y=alt.Y("Entries:Q"),
+).properties(
+    title="Top Centers by Entries", width=500, height=300
+)
+
+st.altair_chart(chart7)
+
+# Top Species
+chart8 =  alt.Chart(rankings[1]).mark_bar().encode(
+    x=alt.X("Species:O"),
+    y=alt.Y("Entries:Q"),
+).properties(
+    title="Top Species by Entries", width=500, height=300
+)
+
+st.altair_chart(chart8)
+
+# Top Platforms
+chart9 =  alt.Chart(rankings[2]).mark_bar().encode(
+    x=alt.X("Platform:O"),
+    y=alt.Y("Entries:Q"),
+).properties(
+    title="Top Platforms by Entries", width=500, height=300
+)
+
+st.altair_chart(chart9)
+
+
