@@ -286,12 +286,11 @@ def rankings(year, df):
 
 # set Figure B year slider
 
-figB_year = st.slider('Select Year', 2008, 2022, 2008)
 
 # Figure B Visualization
 
 # call rankings function
-ranks = rankings(figB_year, everything)
+ranks = rankings(year, everything)
 
 # PLOT
 
