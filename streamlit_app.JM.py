@@ -299,7 +299,7 @@ chart7 =  alt.Chart(ranks[0]).mark_bar().encode(
     x=alt.X("Center:O"),
     y=alt.Y("Entries:Q"),
 ).properties(
-    title="Top Centers by Entries", width=500, height=300
+    title="Top Centers by Entries", width=500, height=500
 )
 
 st.altair_chart(chart7)
@@ -309,7 +309,7 @@ chart8 =  alt.Chart(ranks[1]).mark_bar().encode(
     x=alt.X("Species:O"),
     y=alt.Y("Entries:Q"),
 ).properties(
-    title="Top Species by Entries", width=500, height=300
+    title="Top Species by Entries", width=500, height=500
 )
 
 st.altair_chart(chart8)
@@ -319,7 +319,7 @@ chart9 =  alt.Chart(ranks[2]).mark_bar().encode(
     x=alt.X("Platform:O"),
     y=alt.Y("Entries:Q"),
 ).properties(
-    title="Top Platforms by Entries", width=500, height=300
+    title="Top Platforms by Entries", width=500, height=500
 )
 
 st.altair_chart(chart9)
