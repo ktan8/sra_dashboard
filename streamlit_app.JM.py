@@ -177,7 +177,9 @@ chart1 =  alt.Chart(subset[0]).mark_line(
 )
 
 
-chart2 = alt.Chart(subset[1]).mark_bar().encode(
+chart2 = alt.Chart(subset[1]).mark_line(
+    point=alt.OverlayMarkDef(color='red')
+).encode(
     x=alt.X("Month:O"),
     y=alt.Y("Billion_Basepairs_sequenced:Q"),
 ).properties(
@@ -189,7 +191,9 @@ st.altair_chart(chart1 | chart2)
 
 
 # Side-by-side plots: READS
-chart3 =  alt.Chart(subset[0]).mark_bar().encode(
+chart3 =  alt.Chart(subset[0]).mark_line(
+    point=alt.OverlayMarkDef(color='red')
+).encode(
     x=alt.X("Month:O"),
     y=alt.Y("Million_Reads_sequenced:Q"),
 ).properties(
@@ -197,7 +201,9 @@ chart3 =  alt.Chart(subset[0]).mark_bar().encode(
 )
 
 
-chart4 = alt.Chart(subset[1]).mark_bar().encode(
+chart4 = alt.Chart(subset[1]).mark_line(
+    point=alt.OverlayMarkDef(color='red')
+).encode(
     x=alt.X("Month:O"),
     y=alt.Y("Million_Reads_sequenced:Q"),
 ).properties(
@@ -208,7 +214,9 @@ st.altair_chart(chart3 | chart4)
 
 
 # Side-by-side plots: SPECIES
-chart5 =  alt.Chart(subset2[0]).mark_bar().encode(
+chart5 =  alt.Chart(subset2[0]).mark_line(
+    point=alt.OverlayMarkDef(color='red')
+).encode(
     x=alt.X("Month:O"),
     y=alt.Y("Unique_Species_Sequenced:Q"),
 ).properties(
@@ -216,7 +224,9 @@ chart5 =  alt.Chart(subset2[0]).mark_bar().encode(
 )
 
 
-chart6 = alt.Chart(subset2[1]).mark_bar().encode(
+chart6 = alt.Chart(subset2[1]).mark_line(
+    point=alt.OverlayMarkDef(color='red')
+).encode(
     x=alt.X("Month:O"),
     y=alt.Y("Unique_Species_Sequenced:Q"),
 ).properties(
