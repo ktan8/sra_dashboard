@@ -295,7 +295,7 @@ ranks = rankings(year, everything)
 # PLOT
 
 # Top Centers
-chart7 =  alt.Chart(rankings[0]).mark_bar().encode(
+chart7 =  alt.Chart(ranks[0]).mark_bar().encode(
     x=alt.X("Center:O"),
     y=alt.Y("Entries:Q"),
 ).properties(
@@ -305,7 +305,7 @@ chart7 =  alt.Chart(rankings[0]).mark_bar().encode(
 st.altair_chart(chart7)
 
 # Top Species
-chart8 =  alt.Chart(rankings[1]).mark_bar().encode(
+chart8 =  alt.Chart(ranks[1]).mark_bar().encode(
     x=alt.X("Species:O"),
     y=alt.Y("Entries:Q"),
 ).properties(
@@ -315,7 +315,7 @@ chart8 =  alt.Chart(rankings[1]).mark_bar().encode(
 st.altair_chart(chart8)
 
 # Top Platforms
-chart9 =  alt.Chart(rankings[2]).mark_bar().encode(
+chart9 =  alt.Chart(ranks[2]).mark_bar().encode(
     x=alt.X("Platform:O"),
     y=alt.Y("Entries:Q"),
 ).properties(
