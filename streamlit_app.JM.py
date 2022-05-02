@@ -246,7 +246,7 @@ def rankings(year, df):
   from pandas.core.algorithms import rank
   
   # subset df to desired year
-  sub_df = df[df['Year'] == year]
+  sub_df = df[df['Year'] <= year]
 
   # Make Centers df(based on # entries, aka # rows)
   centers_ranked = sub_df['Center'].value_counts() # count rows per center
