@@ -16,22 +16,17 @@ st.write("## SRA Database Explorer")
 
 #define Figure A functions
 
-def cumulative_monthly_counts(year, df):
-
-  """Takes a year (as int) and input df. Returns 2 new dfs. The first df called "cumulative"
-  has  3 columns; 1)month (Jan - Dec) and 2) cumulative basepair count throughout the year,
-  and 3) cumulative read counts throughout the year. The second df called "monthly" has 3 
-  columns: 1) month, 2) total bp sequenced for that individual month (not a running total 
-  across the year), and 3) total reads sequenced that month (not a running total)."""
+# total number of basepairs vs time (year level, year range with 2008 as default lower bound)
+def cumulative_yearly_counts(start, end, df):
 
   # initialize dfs to hold results
-  Months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-  cumulative = pd.DataFrame(Months, columns=['Month'])
-  monthly = pd.DataFrame(Months, columns=['Month'])
-  
-  # subset df to desired year
-  sub_df = df[df['Year'] == year]
-  
+  Years = list(range(start,end+1))
+  cumulative = pd.DataFrame(Years, columns=['Year'])
+  yearly = pd.DataFrame(Years, columns=['Year'])
+
+  # subset df to desired year range
+  sub_df = df[df.Year.isin(Years)]
+
   # remove rows with '-' bases, convert 'Bases' column values to numeric, 
   sub_df = sub_df[pd.to_numeric(sub_df['Bases'], errors='coerce').notnull()]
   sub_df['Bases'] = sub_df['Bases'].astype('int')
@@ -48,39 +43,39 @@ def cumulative_monthly_counts(year, df):
   # intialize values/lists for loop
   bases_cumu_total = 0
   bases_cumulative_counts = []
-  bases_monthly_counts = []
+  bases_yearly_counts = []
 
   reads_cumu_total = 0
   reads_cumulative_counts = []
-  reads_monthly_counts = []
-  m = 1 # month
+  reads_yearly_counts = []
+  m = start # year marker
 
   # loop through all months, starting with January (1)
-  while m <13:
-    bases_month_total = 0 # gets reinitialized with each new month
-    reads_month_total = 0 # gets reinitialized with each new month
-    sub_df2 = sub_df[sub_df['Month'] == m] # subset to current month
+  while m <end+1:
+    bases_year_total = 0 # gets reinitialized with each new year
+    reads_year_total = 0 # gets reinitialized with each new year
+    sub_df2 = sub_df[sub_df['Year'] == m] # subset to current year
 
-    bases_month_total = int(sub_df2['Bases'].sum()) # add up basepairs for particular month (this is a str for some reason)
-    reads_month_total = int(sub_df2['Spots'].sum()) # same for reads
+    bases_year_total = int(sub_df2['Bases'].sum()) # add up basepairs for particular year (this is a str for some reason)
+    reads_year_total = int(sub_df2['Spots'].sum()) # same for reads
 
-    bases_cumu_total += bases_month_total # add monthly total to cumulative total
+    bases_cumu_total += bases_year_total # add yearly total to cumulative total
     bases_cumulative_counts.append(bases_cumu_total) # append value to cumulative list
-    bases_monthly_counts.append(bases_month_total) # append value to monthly list
+    bases_yearly_counts.append(bases_year_total) # append value to yearly list
 
-    reads_cumu_total += reads_month_total # add monthly total to cumulative total
+    reads_cumu_total += reads_year_total # add yearly total to cumulative total
     reads_cumulative_counts.append(reads_cumu_total) # append value to cumulative list
-    reads_monthly_counts.append(reads_month_total) # append value to monthly list
+    reads_yearly_counts.append(reads_year_total) # append value to yearly list
 
-    m +=1 # increment m up, move onto next month
+    m +=1 # increment m up, move onto next year
   
   # add lists of counts as new columns in dfs
   cumulative['Billion_Basepairs_sequenced'] = bases_cumulative_counts
   cumulative['Million_Reads_sequenced'] = reads_cumulative_counts
-  monthly['Billion_Basepairs_sequenced'] = bases_monthly_counts
-  monthly['Million_Reads_sequenced'] = reads_monthly_counts
+  yearly['Billion_Basepairs_sequenced'] = bases_yearly_counts
+  yearly['Million_Reads_sequenced'] = reads_yearly_counts
 
-  return cumulative, monthly
+  return cumulative, yearly
 
 # function to count unique organisms sequenced each month
 def count_species(year, df):
@@ -161,7 +156,7 @@ sel3 = sel2[sel2['HowSequenced'].isin(study)]
 # Figure A Visualization 
 
 # Call Figure A functions on user selection subset
-subset = cumulative_monthly_counts(year, sel3)
+subset = cumulative_yearly_counts(2008, year, sel3)
 subset2 = count_species(year, sel3)
 
 # PLOT
@@ -170,9 +165,9 @@ subset2 = count_species(year, sel3)
 chart1 =  alt.Chart(subset[0]).mark_line(
     point=alt.OverlayMarkDef(color='red')
 ).encode(
-    x=alt.X("Month:O"),
+    x=alt.X("Year:O"),
     y=alt.Y("Billion_Basepairs_sequenced:Q"),
-    tooltip=["Month:O","Billion_Basepairs_sequenced:Q"]
+    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
 ).properties(
     title="Cumulative Basepairs Sequenced", width=500, height=300
 )
@@ -181,9 +176,9 @@ chart1 =  alt.Chart(subset[0]).mark_line(
 chart2 = alt.Chart(subset[1]).mark_line(
     point=alt.OverlayMarkDef(color='red')
 ).encode(
-    x=alt.X("Month:O"),
+    x=alt.X("Year:O"),
     y=alt.Y("Billion_Basepairs_sequenced:Q"),
-    tooltip=["Month:O","Billion_Basepairs_sequenced:Q"]
+    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
 ).properties(
     title="Basepairs Sequenced per Month", width=500, height=300
 )
@@ -196,9 +191,9 @@ st.altair_chart(chart1 | chart2)
 chart3 =  alt.Chart(subset[0]).mark_line(
     point=alt.OverlayMarkDef(color='red')
 ).encode(
-    x=alt.X("Month:O"),
+    x=alt.X("Year:O"),
     y=alt.Y("Million_Reads_sequenced:Q"),
-    tooltip=["Month:O","Billion_Basepairs_sequenced:Q"]
+    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
 ).properties(
     title="Cumulative Reads Generated", width=500, height=300
 )
@@ -207,9 +202,9 @@ chart3 =  alt.Chart(subset[0]).mark_line(
 chart4 = alt.Chart(subset[1]).mark_line(
     point=alt.OverlayMarkDef(color='red')
 ).encode(
-    x=alt.X("Month:O"),
+    x=alt.X("Year:O"),
     y=alt.Y("Million_Reads_sequenced:Q"),
-    tooltip=["Month:O","Billion_Basepairs_sequenced:Q"]
+    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
 ).properties(
     title="Reads Generated per Month", width=500, height=300
 )
@@ -221,9 +216,9 @@ st.altair_chart(chart3 | chart4)
 chart5 =  alt.Chart(subset2[0]).mark_line(
     point=alt.OverlayMarkDef(color='red')
 ).encode(
-    x=alt.X("Month:O"),
+    x=alt.X("Year:O"),
     y=alt.Y("Unique_Species_Sequenced:Q"),
-    tooltip=["Month:O","Billion_Basepairs_sequenced:Q"]
+    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
 ).properties(
     title="Cumulative Species Sequenced", width=500, height=300
 )
@@ -232,9 +227,9 @@ chart5 =  alt.Chart(subset2[0]).mark_line(
 chart6 = alt.Chart(subset2[1]).mark_line(
     point=alt.OverlayMarkDef(color='red')
 ).encode(
-    x=alt.X("Month:O"),
+    x=alt.X("Year:O"),
     y=alt.Y("Unique_Species_Sequenced:Q"),
-    tooltip=["Month:O","Billion_Basepairs_sequenced:Q"]
+    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
 ).properties(
     title="Species Sequenced per Month", width=500, height=300
 )
