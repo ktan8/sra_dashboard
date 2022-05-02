@@ -148,9 +148,6 @@ sel2 = sel1[sel1['Center'].isin(center)]
 study = st.sidebar.multiselect('Select Study Type', pd.unique(everything["HowSequenced"]), pd.unique(everything["HowSequenced"]))
 sel3 = sel2[sel2['HowSequenced'].isin(study)]
 
-
-
-
 # Figure A Visualization 
 
 # Call Figure A functions on user selection subset
@@ -178,7 +175,7 @@ chart2 = alt.Chart(subset[1]).mark_line(
     y=alt.Y("Billion_Basepairs_sequenced:Q"),
     tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
 ).properties(
-    title="Basepairs Sequenced per Month", width=500, height=300
+    title="Basepairs Sequenced per Year", width=500, height=300
 )
 
 st.altair_chart(chart1 | chart2)
@@ -204,7 +201,7 @@ chart4 = alt.Chart(subset[1]).mark_line(
     y=alt.Y("Million_Reads_sequenced:Q"),
     tooltip=["Year:O","Million_Reads_sequenced:Q"]
 ).properties(
-    title="Reads Generated per Month", width=500, height=300
+    title="Reads Generated per Year", width=500, height=300
 )
 
 st.altair_chart(chart3 | chart4)
@@ -229,7 +226,7 @@ chart6 = alt.Chart(subset2[1]).mark_line(
     y=alt.Y("Unique_Species_Sequenced:Q"),
     tooltip=["Year:O","Unique_Species_Sequenced:Q"]
 ).properties(
-    title="Species Sequenced per Month", width=500, height=300
+    title="Species Sequenced per Year", width=500, height=300
 )
 
 st.altair_chart(chart5 | chart6)
