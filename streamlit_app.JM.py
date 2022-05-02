@@ -336,3 +336,97 @@ chart9 =  alt.Chart(ranks[2]).mark_bar().encode(
 st.altair_chart(chart9)
 
 
+
+###############################
+###############################
+
+
+# Clean dataframe and remove runs without any spots and bases values
+everything_clean = everything[everything["Bases"] != "-"]
+everything_clean = everything_clean[everything_clean["Spots"] != "-"]
+
+everything_clean["Bases"] = pd.to_numeric(everything_clean["Bases"])
+everything_clean["Spots"] = pd.to_numeric(everything_clean["Spots"])
+
+species_top1000 = everything_clean["Species"].value_counts(dropna=False)[0:1000]
+
+df1 = everything_clean.groupby(['Year', 'Species', 'Machine']).sum().reset_index()
+
+
+########################
+# P2.1 create a drop-down cancer selector
+#cancers = df1['Species'].unique()
+species = species_top1000.keys().tolist()
+species = species[1:len(species)] # drop the NAN value
+species_dropdown = alt.binding_select(options=species)
+species_select = alt.selection_single(
+    # add your code here
+    fields=["Species"], bind=species_dropdown, name="Species"
+)
+
+# only compare several selected platforms
+platforms = ['LS454', 'ILLUMINA', 'HELICOS', 'ABI_SOLID', 'ION_TORRENT',
+       'PACBIO_SMRT', 'COMPLETE_GENOMICS', 'OXFORD_NANOPORE', 'CAPILLARY',
+       'BGISEQ']
+df1 = df1[df1['Machine'].isin(platforms)]
+df1 = df1[df1['Species'].isin(species)] # Keep only top 1000 species
+
+########################
+# create line charts
+base = alt.Chart(df1
+ ).mark_line().encode(
+    x='Year:O',
+    y='Bases:Q',
+    color='Machine:N',
+    tooltip='Machine:N'
+)
+
+
+########################
+# add the drop-down selection to the chart (P2.1)
+chart = base.add_selection(
+    species_select
+).transform_filter(
+    species_select
+).properties(
+    width=600,
+    height=200
+)
+
+
+########################
+# add brush
+brush = alt.selection_interval( encodings=['x'])
+
+upper = chart.encode(
+    alt.X('Year:O', scale=alt.Scale(domain=brush))
+)
+
+lower = chart.properties(
+    height=60
+).add_selection(brush)
+
+
+upper & lower
+
+
+df2 = everything_clean.groupby(['Year', 'Machine']).sum().reset_index()
+
+base = alt.Chart(df2
+ ).mark_line().encode(
+    x='Year:O',
+    #y='Bases:Q',
+    y=alt.Y('Bases:Q',
+        scale=alt.Scale(type="log")),
+    color='Machine:N',
+)
+
+spots = alt.Chart(df2
+ ).mark_line().encode(
+    x='Year:O',
+    y=alt.Y('Spots:Q',
+        scale=alt.Scale(type="log")),
+    color='Machine:N',
+)
+
+base | spots
