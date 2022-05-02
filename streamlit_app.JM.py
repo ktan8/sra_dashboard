@@ -130,7 +130,7 @@ def count_species_year(start, end, df):
 # Define Figure A user iteractive selection options
 
 #Year slider
-year = st.slider('Select Year', 2008, 2022, 2008)
+year = st.slider('Select Year', 2008, 2022, 2012)
 #subset = everything[everything["Year"] == year]
 #print(subset.Month)
 
