@@ -142,7 +142,7 @@ year = st.slider('Select Year', 2008, 2022, 2008)
 #print(subset.Month)
 
 # Platform multiselector
-platform = st.multiselect('Select Sequencing Platform', pd.unique(everything["Machine"]))
+platform = st.multiselect('Select Sequencing Platform', pd.unique(everything["Machine"]), empty='all')
 #machines list: ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS']
 sel1 = everything[everything['Machine'].isin(platform)]
 
