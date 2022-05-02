@@ -78,56 +78,54 @@ def cumulative_yearly_counts(start, end, df):
   return cumulative, yearly
 
 # function to count unique organisms sequenced each month
-def count_species(year, df):
-  """ will explain later"""
+def count_species_year(start, end, df):
 
   # initialize dfs to hold results
-  Months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-  cumulative = pd.DataFrame(Months, columns=['Month'])
-  monthly = pd.DataFrame(Months, columns=['Month'])
+  Years = list(range(start,end+1))
+  cumulative = pd.DataFrame(Years, columns=['Year'])
+  yearly = pd.DataFrame(Years, columns=['Year'])
 
-  # subset df to desired year
-  sub_df = df[df['Year'] == year]
+  # subset df to desired year range
+  sub_df = df[df.Year.isin(Years)]
 
   # intialize values/lists for loop
-  year_seen = [] # list of SpeciesID already seen this year, doesn't get reset
+  total_seen = [] # list of SpeciesID already seen total, doesn't get reset
   cumu_count = 0 # doesn't get reset with each month
-  month_result = []
+  year_result = []
   cumu_result =[]
-  m = 1 # month
+  m = start # year marker
 
-  # loop through all months, starting with January (1)
-  while m <13:
+  # loop through all years in range
+  while m <end+1:
 
-    #initialize monthly stuff
-    month_seen = [] # list of SpeciesID already seen this month
-    month_count = 0
+    #initialize yearly stuff
+    year_seen = [] # list of SpeciesID already seen this year
+    year_count = 0
 
     # subset to current month
-    sub_df2 = sub_df[sub_df['Month'] == m] 
+    sub_df2 = sub_df[sub_df['Year'] == m] 
 
     #loop through each value in SpeciesID
     for i in sub_df2["SpeciesID"]:
-      if i not in month_seen:
-        month_count += 1
-        month_seen.append(i)
       if i not in year_seen:
-        cumu_count +=1
+        year_count += 1
         year_seen.append(i)
-    
-    # when done looping through all rows for that month, append count results to lists
-    month_result.append(month_count)
+      if i not in total_seen:
+        cumu_count +=1
+        total_seen.append(i)
+
+    # when done looping through all rows for that year, append count results to lists
+    year_result.append(year_count)
     cumu_result.append(cumu_count)
 
-    # increment m up, move onto next month
+    # increment m up, move onto next year
     m +=1 
-
 
   # add lists of counts as new columns in dfs
   cumulative['Unique_Species_Sequenced'] = cumu_result
-  monthly['Unique_Species_Sequenced'] = month_result
+  yearly['Unique_Species_Sequenced'] = year_result
 
-  return cumulative, monthly
+  return cumulative, yearly
 
 # Define Figure A user iteractive selection options
 
@@ -157,7 +155,7 @@ sel3 = sel2[sel2['HowSequenced'].isin(study)]
 
 # Call Figure A functions on user selection subset
 subset = cumulative_yearly_counts(2008, year, sel3)
-subset2 = count_species(year, sel3)
+subset2 = count_species_year(2008, year, sel3)
 
 # PLOT
 
@@ -193,7 +191,7 @@ chart3 =  alt.Chart(subset[0]).mark_line(
 ).encode(
     x=alt.X("Year:O"),
     y=alt.Y("Million_Reads_sequenced:Q"),
-    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
+    tooltip=["Year:O","Million_Reads_sequenced:Q"]
 ).properties(
     title="Cumulative Reads Generated", width=500, height=300
 )
@@ -204,7 +202,7 @@ chart4 = alt.Chart(subset[1]).mark_line(
 ).encode(
     x=alt.X("Year:O"),
     y=alt.Y("Million_Reads_sequenced:Q"),
-    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
+    tooltip=["Year:O","Million_Reads_sequenced:Q"]
 ).properties(
     title="Reads Generated per Month", width=500, height=300
 )
@@ -218,7 +216,7 @@ chart5 =  alt.Chart(subset2[0]).mark_line(
 ).encode(
     x=alt.X("Year:O"),
     y=alt.Y("Unique_Species_Sequenced:Q"),
-    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
+    tooltip=["Year:O","Unique_Species_Sequenced:Q"]
 ).properties(
     title="Cumulative Species Sequenced", width=500, height=300
 )
@@ -229,7 +227,7 @@ chart6 = alt.Chart(subset2[1]).mark_line(
 ).encode(
     x=alt.X("Year:O"),
     y=alt.Y("Unique_Species_Sequenced:Q"),
-    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
+    tooltip=["Year:O","Unique_Species_Sequenced:Q"]
 ).properties(
     title="Species Sequenced per Month", width=500, height=300
 )
