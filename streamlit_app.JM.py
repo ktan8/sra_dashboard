@@ -142,17 +142,17 @@ year = st.slider('Select Year', 2008, 2022, 2008)
 #print(subset.Month)
 
 # Platform multiselector
-platform = st.multiselect('Select Sequencing Platform', pd.unique(everything["Machine"]), ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS'])
+platform = st.sidebar.multiselect('Select Sequencing Platform', pd.unique(everything["Machine"]), ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS'])
 #machines list: ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS']
 sel1 = everything[everything['Machine'].isin(platform)]
 
 # Center multiselector, top 20, GEO and NVAL are generic labels
 top_20_centers = ['GEO', 'Wellcome Sanger Institute', 'SC', 'CDC-OAMD', 'NVAL', 'BI', 'EDLB-CDC', 'UCSDMI', 'WGSC', 'Respiratory Virus Unit, Microbiology Services Coli', 'Originating lab: Wales Specialist Virology Centre', 'Broad_GCID', 'BGI', 'PHE', 'BCM', 'IPK-Gatersleben', 'JGI', 'Leibniz Institute of Plant Genetics and Crop Plant', 'UCSD']
-center = st.multiselect('Select Center', top_20_centers, top_20_centers)
+center = st.sidebar.multiselect('Select Center', top_20_centers, top_20_centers)
 sel2 = sel1[sel1['Center'].isin(center)]
 
 # Study Type multiselector
-study = st.multiselect('Select Study Type', pd.unique(everything["HowSequenced"]), pd.unique(everything["HowSequenced"]))
+study = st.sidebar.multiselect('Select Study Type', pd.unique(everything["HowSequenced"]), pd.unique(everything["HowSequenced"]))
 sel3 = sel2[sel2['HowSequenced'].isin(study)]
 
 
