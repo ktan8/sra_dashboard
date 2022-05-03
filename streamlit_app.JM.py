@@ -433,5 +433,5 @@ spots = alt.Chart(df2
 )
 
 
-
+st.header("Yearly trends in sequencing platform")
 base | spots
