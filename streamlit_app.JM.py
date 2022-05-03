@@ -215,7 +215,7 @@ chart7 =  alt.Chart(ranks[0]).mark_bar().encode(
     x=alt.X("Entries:Q"),
     tooltip=["Center","Entries:Q"]
 ).properties(
-    title="Top Centers by Entries", width=180, height=500
+    title="Top Centers by Entries", width=160, height=500
 )
 
 
@@ -226,7 +226,7 @@ chart8 =  alt.Chart(ranks[1]).mark_bar().encode(
     x=alt.X("Entries:Q"),
     tooltip=["Species","Entries:Q"]
 ).properties(
-    title="Top Species by Entries", width=180, height=500
+    title="Top Species by Entries", width=160, height=500
 )
 
 
@@ -237,7 +237,7 @@ chart9 =  alt.Chart(ranks[2]).mark_bar().encode(
     x=alt.X("Entries:Q"),
     tooltip=["Platform","Entries:Q"]
 ).properties(
-    title="Top Platforms by Entries", width=180, height=500
+    title="Top Platforms by Entries", width=160, height=500
 )
 
 #st.altair_chart(chart7) | st.altair_chart(chart8) | st.altair_chart(chart9)
