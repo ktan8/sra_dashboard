@@ -3,8 +3,11 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-# Load data
+# Set wide format for the columns
+#st.set_page_config(layout="wide")
 
+
+# Load data
 @st.cache
 def load_data():
     everything = pd.read_csv("https://media.githubusercontent.com/media/ktan8/sra_dashboard/main/data/data_date.csv")
@@ -13,6 +16,9 @@ everything = load_data()
 
 #Title
 st.write("## SRA Database Explorer")
+
+
+
 
 #define Figure A functions
 
@@ -127,126 +133,10 @@ def count_species_year(start, end, df):
 
   return cumulative, yearly
 
-# Define Figure A user iteractive selection options
-
-
-
-##########################################################################
-##########################################################################
-
-
-#Year slider
-year = st.slider('Select Year', 2008, 2022, 2020)
-#subset = everything[everything["Year"] == year]
-#print(subset.Month)
-
-# # Platform multiselector
-# platform = st.multiselect('Select Sequencing Platform', pd.unique(everything["Machine"]), ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS'])
-# #machines list: ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS']
-# sel1 = everything[everything['Machine'].isin(platform)]
-
-# # Center multiselector, top 20, GEO and NVAL are generic labels
-# top_20_centers = ['GEO', 'Wellcome Sanger Institute', 'SC', 'CDC-OAMD', 'NVAL', 'BI', 'EDLB-CDC', 'UCSDMI', 'WGSC', 'Respiratory Virus Unit, Microbiology Services Coli', 'Originating lab: Wales Specialist Virology Centre', 'Broad_GCID', 'BGI', 'PHE', 'BCM', 'IPK-Gatersleben', 'JGI', 'Leibniz Institute of Plant Genetics and Crop Plant', 'UCSD']
-# center = st.multiselect('Select Center', top_20_centers, top_20_centers)
-# sel2 = sel1[sel1['Center'].isin(center)]
-
-# # Study Type multiselector
-study = st.multiselect('Select Study Type', pd.unique(everything["HowSequenced"]), pd.unique(everything["HowSequenced"]))
-# sel3 = sel2[sel2['HowSequenced'].isin(study)]
-sel3 = everything[everything['HowSequenced'].isin(study)]
-
-# Figure A Visualization 
-
-# Call Figure A functions on user selection subset
-subset = cumulative_yearly_counts(2008, year, sel3)
-subset2 = count_species_year(2008, year, sel3)
-
-# PLOT
-
-# Side-by-side plots: BASEPAIRS
-chart1 =  alt.Chart(subset[0]).mark_line(
-    point=alt.OverlayMarkDef(color='red')
-).encode(
-    x=alt.X("Year:O"),
-    y=alt.Y("Billion_Basepairs_sequenced:Q"),
-    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
-).properties(
-    title="Cumulative Basepairs Sequenced", width=500, height=300
-)
-
-
-chart2 = alt.Chart(subset[1]).mark_line(
-    point=alt.OverlayMarkDef(color='red')
-).encode(
-    x=alt.X("Year:O"),
-    y=alt.Y("Billion_Basepairs_sequenced:Q"),
-    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
-).properties(
-    title="Basepairs Sequenced per Year", width=500, height=300
-)
-
-
-
-
-# Side-by-side plots: READS
-chart3 =  alt.Chart(subset[0]).mark_line(
-    point=alt.OverlayMarkDef(color='red')
-).encode(
-    x=alt.X("Year:O"),
-    y=alt.Y("Million_Reads_sequenced:Q"),
-    tooltip=["Year:O","Million_Reads_sequenced:Q"]
-).properties(
-    title="Cumulative Reads Generated", width=500, height=300
-)
-
-
-chart4 = alt.Chart(subset[1]).mark_line(
-    point=alt.OverlayMarkDef(color='red')
-).encode(
-    x=alt.X("Year:O"),
-    y=alt.Y("Million_Reads_sequenced:Q"),
-    tooltip=["Year:O","Million_Reads_sequenced:Q"]
-).properties(
-    title="Reads Generated per Year", width=500, height=300
-)
-
-
-
-
-# Side-by-side plots: SPECIES
-chart5 =  alt.Chart(subset2[0]).mark_line(
-    point=alt.OverlayMarkDef(color='red')
-).encode(
-    x=alt.X("Year:O"),
-    y=alt.Y("Unique_Species_Sequenced:Q"),
-    tooltip=["Year:O","Unique_Species_Sequenced:Q"]
-).properties(
-    title="Cumulative Species Sequenced", width=500, height=300
-)
-
-
-chart6 = alt.Chart(subset2[1]).mark_line(
-    point=alt.OverlayMarkDef(color='red')
-).encode(
-    x=alt.X("Year:O"),
-    y=alt.Y("Unique_Species_Sequenced:Q"),
-    tooltip=["Year:O","Unique_Species_Sequenced:Q"]
-).properties(
-    title="Species Sequenced per Year", width=500, height=300
-)
-
-st.altair_chart(chart2 | chart4 | chart6)
-st.altair_chart(chart1 | chart3 | chart5)
-
-#st.altair_chart(chart5 | chart6)
-
-
-
-##########################################################################
-##########################################################################
-
-
-
+########################################################
+########################################################
+  
+  
 # FIGURE B: rankings
 
 # define Figure B function
@@ -313,8 +203,8 @@ def rankings(year, df):
 # Figure B Visualization
 
 # call rankings function
-st.header("Top ranks")
-year_ranks = st.slider('Select Year ranks', 2008, 2022, 2020)
+st.header("Top 20 sequencing centers, species, and platforms")
+year_ranks = st.slider('Select Year ranks', 2008, 2022, 2021)
 ranks = rankings(year_ranks, everything)
 
 # PLOT
@@ -325,7 +215,7 @@ chart7 =  alt.Chart(ranks[0]).mark_bar().encode(
     x=alt.X("Entries:Q"),
     tooltip=["Center","Entries:Q"]
 ).properties(
-    title="Top Centers by Entries", width=200, height=500
+    title="Top Centers by Entries", width=180, height=500
 )
 
 
@@ -336,7 +226,7 @@ chart8 =  alt.Chart(ranks[1]).mark_bar().encode(
     x=alt.X("Entries:Q"),
     tooltip=["Species","Entries:Q"]
 ).properties(
-    title="Top Species by Entries", width=200, height=500
+    title="Top Species by Entries", width=180, height=500
 )
 
 
@@ -347,13 +237,152 @@ chart9 =  alt.Chart(ranks[2]).mark_bar().encode(
     x=alt.X("Entries:Q"),
     tooltip=["Platform","Entries:Q"]
 ).properties(
-    title="Top Platforms by Entries", width=200, height=500
+    title="Top Platforms by Entries", width=180, height=500
 )
 
 #st.altair_chart(chart7) | st.altair_chart(chart8) | st.altair_chart(chart9)
 
 
 st.altair_chart(chart7 | chart8 | chart9)
+  
+  
+  
+  
+
+
+
+
+##########################################################################
+##########################################################################
+# Define Figure A user iteractive selection options
+
+st.header("Yearly sequencing trends for selected library preps")
+
+
+#Year slider
+year = st.slider('Select Year', 2008, 2022, 2015)
+#subset = everything[everything["Year"] == year]
+#print(subset.Month)
+
+# Platform multiselector
+all_platforms = ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS']
+#platform = st.multiselect('Select Sequencing Platform', pd.unique(everything["Machine"]), ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS'])
+#machines list: ['ILLUMINA', 'LS454', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ', 'CAPILLARY', 'HELICOS', 'COMPLETE_GENOMICS']
+#sel1 = everything[everything['Machine'].isin(platform)]
+sel1 = everything[everything['Machine'].isin(all_platforms)]
+
+# Center multiselector, top 20, GEO and NVAL are generic labels
+top_20_centers = ['GEO', 'Wellcome Sanger Institute', 'SC', 'CDC-OAMD', 'NVAL', 'BI', 'EDLB-CDC', 'UCSDMI', 'WGSC', 'Respiratory Virus Unit, Microbiology Services Coli', 'Originating lab: Wales Specialist Virology Centre', 'Broad_GCID', 'BGI', 'PHE', 'BCM', 'IPK-Gatersleben', 'JGI', 'Leibniz Institute of Plant Genetics and Crop Plant', 'UCSD']
+#center = st.multiselect('Select Center', top_20_centers, top_20_centers)
+#sel2 = sel1[sel1['Center'].isin(center)]
+sel2 = sel1[sel1['Center'].isin(top_20_centers)]
+
+# # Study Type multiselector
+study = st.multiselect('Select Study Type', pd.unique(everything["HowSequenced"]), pd.unique(everything["HowSequenced"]))
+sel3 = sel2[sel2['HowSequenced'].isin(study)]
+#sel3 = everything[everything['HowSequenced'].isin(study)]
+
+# Figure A Visualization 
+
+# Call Figure A functions on user selection subset
+subset = cumulative_yearly_counts(2008, year, sel3)
+subset2 = count_species_year(2008, year, sel3)
+
+# PLOT
+
+# Side-by-side plots: BASEPAIRS
+chart1 =  alt.Chart(subset[0]).mark_line(
+    point=alt.OverlayMarkDef(color='red')
+).encode(
+    x=alt.X("Year:O"),
+    y=alt.Y("Billion_Basepairs_sequenced:Q"),
+    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
+).properties(
+    title="Cumulative Basepairs Sequenced", width=250, height=150
+)
+
+
+chart2 = alt.Chart(subset[1]).mark_line(
+    point=alt.OverlayMarkDef(color='red')
+).encode(
+    x=alt.X("Year:O"),
+    y=alt.Y("Billion_Basepairs_sequenced:Q"),
+    tooltip=["Year:O","Billion_Basepairs_sequenced:Q"]
+).properties(
+    title="Basepairs Sequenced per Year", width=250, height=150
+)
+
+
+
+
+# Side-by-side plots: READS
+chart3 =  alt.Chart(subset[0]).mark_line(
+    point=alt.OverlayMarkDef(color='red')
+).encode(
+    x=alt.X("Year:O"),
+    y=alt.Y("Million_Reads_sequenced:Q"),
+    tooltip=["Year:O","Million_Reads_sequenced:Q"]
+).properties(
+    title="Cumulative Reads Generated", width=250, height=150
+)
+
+
+chart4 = alt.Chart(subset[1]).mark_line(
+    point=alt.OverlayMarkDef(color='red')
+).encode(
+    x=alt.X("Year:O"),
+    y=alt.Y("Million_Reads_sequenced:Q"),
+    tooltip=["Year:O","Million_Reads_sequenced:Q"]
+).properties(
+    title="Reads Generated per Year", width=250, height=150
+)
+
+
+
+
+# Side-by-side plots: SPECIES
+chart5 =  alt.Chart(subset2[0]).mark_line(
+    point=alt.OverlayMarkDef(color='red')
+).encode(
+    x=alt.X("Year:O"),
+    y=alt.Y("Unique_Species_Sequenced:Q"),
+    tooltip=["Year:O","Unique_Species_Sequenced:Q"]
+).properties(
+    title="Cumulative Species Sequenced", width=250, height=150
+)
+
+
+chart6 = alt.Chart(subset2[1]).mark_line(
+    point=alt.OverlayMarkDef(color='red')
+).encode(
+    x=alt.X("Year:O"),
+    y=alt.Y("Unique_Species_Sequenced:Q"),
+    tooltip=["Year:O","Unique_Species_Sequenced:Q"]
+).properties(
+    title="Species Sequenced per Year", width=250, height=150
+)
+
+st.altair_chart(chart2 | chart4 | chart6)
+st.altair_chart(chart1 | chart3 | chart5)
+
+# col1, col2, col3 = st.beta_columns((1,1,1))
+
+# with col1:
+	# chart2
+# with col2:
+	# chart4
+# with col3:
+	# chart6
+
+
+#st.altair_chart(chart5 | chart6)
+
+
+
+##########################################################################
+##########################################################################
+
+
 
 
 ###############################
@@ -373,8 +402,7 @@ df1 = everything_clean.groupby(['Year', 'Species', 'Machine']).sum().reset_index
 
 
 ########################
-# P2.1 create a drop-down cancer selector
-#cancers = df1['Species'].unique()
+# create a drop-down cancer selector
 species = species_top1000.keys().tolist()
 species = species[1:len(species)] # drop the NAN value
 species_dropdown = alt.binding_select(options=species)
@@ -394,7 +422,7 @@ df1 = df1[df1['Species'].isin(species)] # Keep only top 1000 species
 # create line charts
 base = alt.Chart(df1
  ).mark_line().encode(
-    x='Year:Q',
+    x=alt.X('Year:Q', axis=alt.Axis(tickMinStep=1)),
     y='Bases:Q',
     color='Machine:N',
     tooltip='Machine:N'
@@ -418,7 +446,8 @@ chart = base.add_selection(
 brush = alt.selection_interval( encodings=['x'])
 
 upper = chart.encode(
-    alt.X('Year:Q', scale=alt.Scale(domain=brush))
+    alt.X('Year:Q', scale=alt.Scale(domain=brush), 
+	axis=alt.Axis(tickMinStep=1))
 )
 
 lower = chart.properties(
@@ -426,28 +455,43 @@ lower = chart.properties(
 ).add_selection(brush)
 
 
-st.header("Species and platform trends")
+st.header("Yearly sequencing trends for each species")
 upper & lower
 
 
-df2 = everything_clean.groupby(['Year', 'Machine']).sum().reset_index()
 
-base = alt.Chart(df2
+#####################################################################
+#####################################################################
+
+st.header("Yearly trends in sequencing platforms used")
+df2 = everything_clean.groupby(['Year', 'Machine']).sum().reset_index()
+select_platforms = st.multiselect('Select Sequencing Platform', options=all_platforms, default=['ILLUMINA', 'ABI_SOLID', 'ION_TORRENT', 'PACBIO_SMRT', 'OXFORD_NANOPORE', 'BGISEQ'])
+df2_filtered = df2[df2['Machine'].isin(select_platforms)]
+
+base = alt.Chart(df2_filtered
  ).mark_line().encode(
     x='Year:O',
     y=alt.Y('Bases:Q',
         scale=alt.Scale(type="log")),
     color='Machine:N',
+).properties(
+    width=600,
+    height=300
 )
 
-spots = alt.Chart(df2
+base.encoding.y.title = 'Number of bases sequenced'
+
+spots = alt.Chart(df2_filtered
  ).mark_line().encode(
     x='Year:O',
     y=alt.Y('Spots:Q',
         scale=alt.Scale(type="log")),
     color='Machine:N',
+).properties(
+    width=600,
+    height=300
 )
+spots.encoding.y.title = 'Number of reads sequenced'
 
 
-st.header("Yearly trends in sequencing platform")
 base & spots
