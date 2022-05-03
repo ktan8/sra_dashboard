@@ -298,7 +298,9 @@ def rankings(year, df):
 # Figure B Visualization
 
 # call rankings function
-ranks = rankings(year, everything)
+st.header("Top ranks")
+year_ranks = st.slider('Select Year ranks', 2008, 2022, 2012)
+ranks = rankings(year_ranks, everything)
 
 # PLOT
 
@@ -335,7 +337,7 @@ chart9 =  alt.Chart(ranks[2]).mark_bar().encode(
 
 #st.altair_chart(chart7) | st.altair_chart(chart8) | st.altair_chart(chart9)
 
-st.header("Top ranks")
+
 st.altair_chart(chart7 | chart8 | chart9)
 
 
