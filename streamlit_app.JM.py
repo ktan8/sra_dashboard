@@ -304,37 +304,37 @@ ranks = rankings(year, everything)
 
 # Top Centers
 chart7 =  alt.Chart(ranks[0]).mark_bar().encode(
-    x=alt.X("Center", sort=None),
-    y=alt.Y("Entries:Q"),
+    y=alt.Y("Center", sort=None),
+    x=alt.X("Entries:Q"),
     tooltip=["Center","Entries:Q"]
 ).properties(
-    title="Top Centers by Entries", width=500, height=500
+    title="Top Centers by Entries", width=200, height=500
 )
 
-st.altair_chart(chart7)
+
 
 # Top Species
 chart8 =  alt.Chart(ranks[1]).mark_bar().encode(
-    x=alt.X("Species", sort=None),
-    y=alt.Y("Entries:Q"),
+    y=alt.Y("Species", sort=None),
+    x=alt.X("Entries:Q"),
     tooltip=["Species","Entries:Q"]
 ).properties(
-    title="Top Species by Entries", width=500, height=500
+    title="Top Species by Entries", width=200, height=500
 )
 
-st.altair_chart(chart8)
+
 
 # Top Platforms
 chart9 =  alt.Chart(ranks[2]).mark_bar().encode(
-    x=alt.X("Platform", sort=None),
-    y=alt.Y("Entries:Q"),
+    y=alt.Y("Platform", sort=None),
+    x=alt.X("Entries:Q"),
     tooltip=["Platform","Entries:Q"]
 ).properties(
-    title="Top Platforms by Entries", width=500, height=500
+    title="Top Platforms by Entries", width=200, height=500
 )
 
-st.altair_chart(chart9)
-
+#st.altair_chart(chart7) | st.altair_chart(chart8) | st.altair_chart(chart9)
+st.altair_chart(chart7 | chart8 | chart9)
 
 
 ###############################
