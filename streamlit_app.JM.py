@@ -334,6 +334,8 @@ chart9 =  alt.Chart(ranks[2]).mark_bar().encode(
 )
 
 #st.altair_chart(chart7) | st.altair_chart(chart8) | st.altair_chart(chart9)
+
+st.header("Top ranks")
 st.altair_chart(chart7 | chart8 | chart9)
 
 
@@ -407,6 +409,7 @@ lower = chart.properties(
 ).add_selection(brush)
 
 
+st.header("Species and platform trends")
 upper & lower
 
 
@@ -428,5 +431,7 @@ spots = alt.Chart(df2
         scale=alt.Scale(type="log")),
     color='Machine:N',
 )
+
+
 
 base | spots
