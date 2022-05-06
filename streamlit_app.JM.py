@@ -6,6 +6,7 @@ import streamlit as st
 # Set wide format for the columns
 #st.set_page_config(layout="wide")
 
+# Debugging streamlit
 
 # Load data
 @st.cache
